@@ -1,0 +1,16 @@
+1st World Developments
+Reseller Certificates Overview
+
+This file provides a summary of reseller and distributor relationships referenced on the website.
+
+Referenced Brands
+- HP
+- Lenovo
+- Dell
+- Logitech
+- Brother
+- Epson
+- Targus
+- Netrace
+
+Formal certificate copies can be distributed directly during active procurement or onboarding processes.

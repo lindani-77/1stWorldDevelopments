@@ -1,0 +1,14 @@
+1st World Developments
+Information Security Policy
+
+Purpose
+This policy outlines the protection of company, client and partner information.
+
+Principles
+- Limit access to authorised personnel only.
+- Protect sensitive documents, records and communications.
+- Use approved systems and secure handling practices.
+- Escalate suspected security incidents immediately.
+
+Coverage
+This policy applies to physical records, digital files, email communication and project information.
