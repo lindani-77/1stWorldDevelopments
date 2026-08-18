@@ -90,9 +90,7 @@ const clientDisplayNameOverrides: Record<string, string> = {
   xds: "XDS",
 };
 
-const brandLogos = buildUniqueLogoAssets(brandLogoModules, brandDisplayNameOverrides).filter(
-  (logo) => !/karcher/i.test(logo.filename) && !/karcher/i.test(logo.name),
-);
+const brandLogos = buildUniqueLogoAssets(brandLogoModules, brandDisplayNameOverrides);
 const clientLogos = buildUniqueLogoAssets(clientLogoModules, clientDisplayNameOverrides);
 
 const brandLogoKeys = new Set(brandLogos.map((logo) => logo.name.trim().toLowerCase()));
