@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 export function Footer() {
   return (
     <footer className="w-full bg-white text-black">
-      <div className="grid w-full gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 md:grid-cols-[1.6fr_0.7fr_0.9fr_0.7fr] md:gap-4 md:px-8 md:py-12 lg:gap-6 lg:px-12 lg:py-14">
+      <div className="grid w-full gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 md:grid-cols-[1.55fr_0.7fr_0.85fr_0.7fr] md:gap-4 md:px-8 md:py-12 lg:gap-6 lg:px-12 lg:py-14">
         <div>
           <div className="flex items-center gap-3 overflow-visible">
             <Link to="/" className="inline-flex w-[130px] sm:w-[150px] md:w-[160px] items-center overflow-visible transition-transform hover:-translate-y-0.5" aria-label="1st World Developments">
@@ -34,7 +34,7 @@ export function Footer() {
             ))}
           </ul>
         </div>
-        <div className="flex flex-col gap-2 sm:gap-3 md:pl-2">
+        <div className="flex flex-col gap-2 sm:gap-3 md:pl-1">
           <div className="text-xs uppercase tracking-[0.18em] font-semibold text-black">Contact</div>
           <ul className="space-y-1 sm:space-y-1.5 text-xs sm:text-sm text-black">
             <li className="leading-snug">4 Barium Street, Alrode, 1451</li>

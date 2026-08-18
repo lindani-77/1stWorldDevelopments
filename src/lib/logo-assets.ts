@@ -39,20 +39,19 @@ function assetDisplayName(filename: string, overrides: Record<string, string>) {
 }
 
 export function buildUniqueLogoAssets(modules: Record<string, string>, overrides: Record<string, string> = {}) {
-  const uniqueAssets = new Map<string, LogoAsset>();
   const seenDisplayNames = new Set<string>();
 
-  // First pass: collect all assets with their dedup keys
   const allAssets: Array<{ key: string; asset: LogoAsset; score: number }> = [];
-  
+
   for (const [path, src] of Object.entries(modules)) {
     const filename = path.split("/").pop() ?? "";
     const key = assetKey(filename);
     const name = assetDisplayName(filename, overrides);
-    
-    const penalty = /(photoroom|edited|preview)/i.test(filename) ? 1 : 0;
-    const score = extensionScore(filename) - penalty;
-    
+
+    const isTransparentBrandLogo = /(removebg|logo|preview)/i.test(filename) && /nettrace|treeline|wintel|hp|lenovo|logitech|targus|epson|brother|polaroid|sophos|meeco|dell|adobe|acronis|fellowes|abelanani|ctp|parrot|rexel|trefoil|hpe|hp/i.test(filename);
+    const penalty = /(photoroom|edited)/i.test(filename) ? 1 : 0;
+    const score = extensionScore(filename) + (isTransparentBrandLogo ? 2 : 0) - penalty;
+
     allAssets.push({
       key,
       asset: { name, src, filename },
@@ -60,7 +59,6 @@ export function buildUniqueLogoAssets(modules: Record<string, string>, overrides
     });
   }
 
-  // Second pass: keep best version of each asset by key
   const bestByKey = new Map<string, { asset: LogoAsset; score: number }>();
   for (const { key, asset, score } of allAssets) {
     const existing = bestByKey.get(key);
@@ -69,9 +67,17 @@ export function buildUniqueLogoAssets(modules: Record<string, string>, overrides
     }
   }
 
-  // Third pass: ensure no duplicate display names
+  const resultByDisplayName = new Map<string, { asset: LogoAsset; score: number }>();
+  for (const { asset, score } of bestByKey.values()) {
+    const displayName = asset.name.trim().toLowerCase();
+    const existing = resultByDisplayName.get(displayName);
+    if (!existing || score > existing.score) {
+      resultByDisplayName.set(displayName, { asset, score });
+    }
+  }
+
   const result: LogoAsset[] = [];
-  for (const { asset } of bestByKey.values()) {
+  for (const { asset } of resultByDisplayName.values()) {
     const displayName = asset.name.trim().toLowerCase();
     if (!seenDisplayNames.has(displayName)) {
       result.push(asset);

@@ -90,17 +90,9 @@ const clientDisplayNameOverrides: Record<string, string> = {
   xds: "XDS",
 };
 
-const brandLogos = buildUniqueLogoAssets(brandLogoModules, brandDisplayNameOverrides)
-  .filter((logo) => !/karcher/i.test(logo.filename) && !/karcher/i.test(logo.name))
-  .map((logo) => {
-    if (/nettrace/i.test(logo.name) || /nettrace/i.test(logo.filename)) {
-      const replacement = Object.entries(brandLogoModules).find(([path]) => /NetTrace_Logo-removebg-preview/i.test(path));
-      if (replacement) {
-        return { ...logo, src: replacement[1], filename: replacement[0].split('/').pop() ?? logo.filename, name: 'NetTrace' };
-      }
-    }
-    return logo;
-  });
+const brandLogos = buildUniqueLogoAssets(brandLogoModules, brandDisplayNameOverrides).filter(
+  (logo) => !/karcher/i.test(logo.filename) && !/karcher/i.test(logo.name),
+);
 const clientLogos = buildUniqueLogoAssets(clientLogoModules, clientDisplayNameOverrides);
 
 const brandLogoKeys = new Set(brandLogos.map((logo) => logo.name.trim().toLowerCase()));
