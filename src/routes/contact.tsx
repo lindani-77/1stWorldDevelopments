@@ -1,13 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { PageHero } from "../components/site/PageHero";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import contactHero from "../assets/contact-hero.jpg";
+import contactHero from "../assets/contact-image.jpeg";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -32,116 +27,209 @@ const baseSchema = z.object({
 
 type FormKind = "consultant" | "opportunities" | "getting-started";
 
-function EnquiryForm({ kind, submitLabel, messageLabel, placeholder }: {
-  kind: FormKind; submitLabel: string; messageLabel: string; placeholder: string;
-}) {
-  const [submitting, setSubmitting] = useState(false);
-  return (
-    <form
-      className="grid gap-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        const form = new FormData(e.currentTarget);
-        const parsed = baseSchema.safeParse({
-          name: form.get("name"),
-          email: form.get("email"),
-          organization: form.get("organization") ?? "",
-          message: form.get("message"),
-        });
-        if (!parsed.success) {
-          toast.error(parsed.error.issues[0]?.message ?? "Please check the form");
-          return;
-        }
-        setSubmitting(true);
-        setTimeout(() => {
-          setSubmitting(false);
-          toast.success("Thank you — the right team member will get back to you shortly.");
-          (e.target as HTMLFormElement).reset();
-        }, 700);
-      }}
-    >
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor={`${kind}-name`}>Full name *</Label>
-          <Input id={`${kind}-name`} name="name" required placeholder="Your name" />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${kind}-email`}>Email *</Label>
-          <Input id={`${kind}-email`} name="email" type="email" required placeholder="you@example.com" />
-        </div>
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor={`${kind}-org`}>Organization</Label>
-        <Input id={`${kind}-org`} name="organization" placeholder="Company name" />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor={`${kind}-msg`}>{messageLabel} *</Label>
-        <Textarea id={`${kind}-msg`} name="message" rows={5} required placeholder={placeholder} />
-      </div>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="mt-2 inline-flex items-center justify-center rounded-full gradient-hero text-white font-semibold px-6 py-3 text-sm hover:brightness-110 disabled:opacity-70 transition"
-      >
-        {submitting ? "Sending…" : submitLabel}
-      </button>
-    </form>
-  );
-}
+const tabOptions: { value: FormKind; label: string; description: string; messageLabel: string; placeholder: string }[] = [
+  {
+    value: "consultant",
+    label: "Connect with a consultant",
+    description: "Structured advisory support, decision-making guidance or a consultation on a pressing challenge.",
+    messageLabel: "Your message",
+    placeholder: "Describe your consulting need.",
+  },
+  {
+    value: "opportunities",
+    label: "Project opportunities",
+    description: "Projects that require adhoc supply, operational consulting and research execution support. Share scope, timeline and expected outcomes.",
+    messageLabel: "Project scope",
+    placeholder: "Outline scope, timeline and expected outcomes.",
+  },
+  {
+    value: "getting-started",
+    label: "Getting started",
+    description: "Our onboarding process keeps requirements clear and implementation practical. Tell us where you are and where you want to go.",
+    messageLabel: "What are you looking to start?",
+    placeholder: "Tell us about the challenge, project or support you need.",
+  },
+];
 
 function ContactPage() {
+  const [selectedTab, setSelectedTab] = useState<FormKind>("consultant");
+  const [submitting, setSubmitting] = useState(false);
+  const activeTab = tabOptions.find((tab) => tab.value === selectedTab)!;
+
   return (
-    <>
-      <PageHero
-        eyebrow="Contact us"
-        title={<>Each interaction transforms raw information into retained knowledge.</>}
-        description="Your interaction supports a continuously improving process and client experience. Complete the right form and the appropriate team member will respond. Required fields are marked with an asterisk (*)."
-        image={contactHero}
-        imageAlt="Consultant in a modern office"
-      />
+    <div className="w-full bg-[#dfe4eb]">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-8 sm:py-12 md:px-12 md:py-16 lg:px-16">
+        <section className="mb-8 sm:mb-12 md:mb-16 grid grid-cols-1 items-center gap-6 sm:gap-8 md:gap-10 md:gap-12 lg:grid-cols-2">
+          <div>
+            <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[var(--green-support)] mb-2 sm:mb-3">
+              CONTACT US
+            </p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-slate-900 tracking-tight leading-snug mb-3 sm:mb-4">
+              Each interaction transforms raw information into retained knowledge.
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md">
+              Your interaction supports a continuously improving process and client experience. Complete the right form and the appropriate team member will respond. Required fields are marked with an asterisk (*).
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-2xl sm:rounded-3xl md:rounded-[28px] bg-white shadow-sm aspect-[4/3]">
+            <img
+              src={contactHero}
+              alt="Contact hero image"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </section>
 
-      {/* Pathways */}
-      <section className="mx-auto max-w-7xl px-5 md:px-8 py-16 md:py-20" data-reveal>
-        <div className="max-w-2xl">
-          <p className="eyebrow">Opportunity pathways</p>
-          <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-navy">Choose the right category and submit your enquiry.</h2>
-          <p className="mt-3 text-foreground/70">
-            
-            <a href="mailto:info@1stworlddevelopments.co.za" className="ml-1 font-medium text-navy hover:text-green-support"></a>.
+        <section className="mb-6 sm:mb-8">
+          <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[var(--green-support)] mb-1.5 sm:mb-2">
+            OPPORTUNITY PATHWAYS
           </p>
-        </div>
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900 tracking-tight mb-1.5 sm:mb-2">
+            Choose the right category and submit your enquiry.
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600">
+            Select the best-fit path below and provide your details so the right team can assist you.
+          </p>
+        </section>
 
-        <div className="mt-10 rounded-3xl border border-border bg-white p-4 md:p-8 shadow-[var(--shadow-soft)]">
-          <Tabs defaultValue="consultant" className="w-full">
-            <TabsList className="w-full h-auto flex flex-wrap justify-start rounded-xl p-1">
-              <TabsTrigger value="consultant" className="data-[state=active]:gradient-hero data-[state=active]:text-white rounded-lg text-sm py-2 px-4">
-                Connect with a consultant
-              </TabsTrigger>
-              <TabsTrigger value="opportunities" className="data-[state=active]:gradient-hero data-[state=active]:text-white rounded-lg text-sm py-2 px-4">
-                Project opportunities
-              </TabsTrigger>
-              <TabsTrigger value="getting-started" className="data-[state=active]:gradient-hero data-[state=active]:text-white rounded-lg text-sm py-2 px-4">
-                Getting started
-              </TabsTrigger>
-            </TabsList>
+        <section className="rounded-xl sm:rounded-2xl md:rounded-[28px] bg-white p-4 sm:p-6 md:p-8 shadow-md sm:shadow-lg shadow-black/5">
+          <div className="bg-[#e5e7eb] rounded-full p-0.5 sm:p-1 flex flex-wrap gap-0.5 sm:gap-1 mb-4 sm:mb-5 md:mb-6">
+            {tabOptions.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setSelectedTab(tab.value)}
+                className={`rounded-full px-2 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium transition-all ${
+                  selectedTab === tab.value
+                    ? "bg-[var(--green-support)] text-white"
+                    : "text-slate-700 hover:text-slate-900"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-            <TabsContent value="consultant" className="pt-8">
-              <p className="text-foreground/70 mb-6 max-w-2xl">Structured advisory support, decision-making guidance or a consultation on a pressing challenge.</p>
-              <EnquiryForm kind="consultant" submitLabel="Send enquiry" messageLabel="Your message" placeholder="Describe your consulting need." />
-            </TabsContent>
+          <p className="text-xs sm:text-[13px] text-slate-600 mb-4 sm:mb-6">
+            {activeTab.description}
+          </p>
 
-            <TabsContent value="opportunities" className="pt-8">
-              <p className="text-foreground/70 mb-6 max-w-2xl">Projects that require adhoc supply, operational consulting and research execution support. Share scope, timeline and expected outcomes.</p>
-              <EnquiryForm kind="opportunities" submitLabel="Submit opportunity" messageLabel="Project scope" placeholder="Outline scope, timeline and expected outcomes." />
-            </TabsContent>
+          <form
+            className="grid gap-3 sm:gap-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const form = new FormData(event.currentTarget);
+              const parsed = baseSchema.safeParse({
+                name: form.get("name"),
+                email: form.get("email"),
+                organization: form.get("organization") ?? "",
+                message: form.get("message"),
+              });
 
-            <TabsContent value="getting-started" className="pt-8">
-              <p className="text-foreground/70 mb-6 max-w-2xl">Our onboarding process keeps requirements clear and implementation practical. Tell us where you are and where you want to go.</p>
-              <EnquiryForm kind="getting-started" submitLabel="Start the conversation" messageLabel="What are you looking to start?" placeholder="Tell us about the challenge, project or support you need." />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-    </>
+              if (!parsed.success) {
+                toast.error(parsed.error.issues[0]?.message ?? "Please check the form");
+                return;
+              }
+
+              setSubmitting(true);
+
+              const payload = {
+                name: parsed.data.name,
+                email: parsed.data.email,
+                organization: parsed.data.organization || "Not provided",
+                message: parsed.data.message,
+                category: activeTab.label,
+              };
+
+              const subject = encodeURIComponent(`${payload.category}: Enquiry from ${payload.name}`);
+              const body = encodeURIComponent(
+                [
+                  `Name: ${payload.name}`,
+                  `Email: ${payload.email}`,
+                  `Organization: ${payload.organization}`,
+                  `Enquiry type: ${payload.category}`,
+                  "",
+                  "Message:",
+                  payload.message,
+                ].join("\n")
+              );
+
+              window.location.href = `mailto:info@1stworlddevelopments.co.za?subject=${subject}&body=${body}`;
+
+              setTimeout(() => {
+                setSubmitting(false);
+                toast.success("Your email client has been opened with the enquiry details ready to send.");
+                (event.target as HTMLFormElement).reset();
+              }, 700);
+            }}
+          >
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 mb-3 sm:mb-4">
+              <div className="grid gap-1.5 sm:gap-2">
+                <label htmlFor="full-name" className="text-xs font-semibold text-slate-900 block">
+                  Full name*
+                </label>
+                <input
+                  id="full-name"
+                  name="name"
+                  type="text"
+                  required
+                  placeholder="Your name"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs text-slate-800 outline-none focus:border-[var(--green-support)] focus:ring-1 focus:ring-[var(--green-support)] placeholder:text-slate-400"
+                />
+              </div>
+              <div className="grid gap-1.5 sm:gap-2">
+                <label htmlFor="email" className="text-xs font-semibold text-slate-900 block">
+                  Email*
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="you@example.com"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs text-slate-800 outline-none focus:border-[var(--green-support)] focus:ring-1 focus:ring-[var(--green-support)] placeholder:text-slate-400"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+              <label htmlFor="organization" className="text-xs font-semibold text-slate-900 block">
+                Organization
+              </label>
+              <input
+                id="organization"
+                name="organization"
+                type="text"
+                placeholder="Company name"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 outline-none focus:border-[var(--green-support)] focus:ring-1 focus:ring-[var(--green-support)] placeholder:text-slate-400"
+              />
+            </div>
+
+            <div className="grid gap-2 mb-6">
+              <label htmlFor="message" className="text-xs font-semibold text-slate-900 block">
+                {activeTab.messageLabel}*
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                required
+                placeholder={activeTab.placeholder}
+                className="min-h-[10rem] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 outline-none focus:border-[var(--green-support)] focus:ring-1 focus:ring-[var(--green-support)] placeholder:text-slate-400"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-full bg-[var(--green-support)] py-3 text-xs font-medium text-white transition-colors hover:brightness-110 disabled:opacity-70"
+            >
+              {submitting ? "Sending…" : "Send enquiry"}
+            </button>
+          </form>
+        </section>
+      </div>
+    </div>
   );
 }

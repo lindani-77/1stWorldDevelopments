@@ -1,0 +1,1 @@
+var e=`/assets/perspectives-hero-CSNW5IWf.jpg`;export{e as t};

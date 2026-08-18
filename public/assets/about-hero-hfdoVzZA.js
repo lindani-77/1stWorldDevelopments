@@ -1,0 +1,1 @@
+var e=`/assets/about-hero-DyR381zk.jpg`;export{e as t};

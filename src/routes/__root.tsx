@@ -7,10 +7,9 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "../components/site/Header";
 import { Footer } from "../components/site/Footer";
 import { ScrollMouse } from "../components/site/ScrollMouse";
@@ -28,7 +27,7 @@ function NotFoundComponent() {
           </p>
           <Link
             to="/"
-            className="mt-6 inline-flex items-center rounded-full bg-gradient-to-r from-[#e9f8ea] to-[#cfeecf] text-navy px-5 py-2 text-sm font-semibold"
+            className="mt-6 btn-brand px-5 py-2 text-sm"
           >
             Go home
           </Link>
@@ -40,11 +39,8 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error: _error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
@@ -53,9 +49,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <div className="mt-6 flex justify-center gap-2">
           <button
             onClick={() => { router.invalidate(); reset(); }}
-            className="rounded-full bg-gradient-to-r from-[#e9f8ea] to-[#cfeecf] text-navy px-4 py-2 text-sm font-semibold"
+            className="btn-brand px-4 py-2 text-sm"
           >Try again</button>
-          <a href="/" className="rounded-full border border-input px-4 py-2 text-sm font-medium">Go home</a>
+          <a href="/" className="btn-outline-brand px-4 py-2 text-sm font-medium">Go home</a>
         </div>
       </div>
     </div>
@@ -104,9 +100,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen w-full flex-col bg-[#dfe4eb]">
         <Header />
-        <main className="flex-1"><Outlet /></main>
+        <main className="w-full flex-1 bg-[#dfe4eb]">
+          <Outlet />
+        </main>
         <Footer />
         <ScrollMouse />
       </div>

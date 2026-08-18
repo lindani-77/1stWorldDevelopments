@@ -3,7 +3,8 @@ import { articles, getArticle } from "../lib/perspectives";
 
 export const Route = createFileRoute("/perspectives/$slug")({
   loader: ({ params }) => {
-    const article = getArticle(params.slug);
+    const slug = typeof params.slug === 'string' ? decodeURIComponent(params.slug) : params.slug;
+    const article = getArticle(slug as string);
     if (!article) throw notFound();
     return { article };
   },
@@ -31,24 +32,26 @@ function ArticlePage() {
   return (
     <>
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 md:px-8 pt-12 md:pt-16 pb-8" data-reveal>
-        <Link to="/perspectives" className="text-sm text-muted-foreground hover:text-navy">← All perspectives</Link>
-        <p className="mt-8 eyebrow">{article.category}</p>
-        <h1 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-semibold text-navy tracking-tight">{article.title}</h1>
-        <p className="mt-5 text-base md:text-lg text-foreground/70">{article.excerpt}</p>
+      <section className="w-full px-6 pb-8 pt-12 md:px-12 md:pt-16 lg:px-16" data-reveal>
+        <div className="mx-auto w-full max-w-7xl">
+          <Link to="/perspectives" className="text-sm text-muted-foreground hover:text-navy">← All perspectives</Link>
+          <p className="mt-8 eyebrow">{article.category}</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-navy md:text-4xl lg:text-5xl">{article.title}</h1>
+          <p className="mt-5 text-base text-foreground/70 md:text-lg">{article.excerpt}</p>
+        </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-5 md:px-8" data-reveal>
-        <div className="aspect-[16/8] rounded-2xl overflow-hidden gradient-hero" />
+      <div className="w-full px-6 md:px-12 lg:px-16" data-reveal>
+        <div className="mx-auto aspect-[16/8] w-full max-w-7xl overflow-hidden rounded-2xl gradient-hero" />
       </div>
 
-      <article className="mx-auto max-w-3xl px-5 md:px-8 py-14 md:py-16 space-y-6 text-base leading-[1.82] text-foreground/85" data-reveal>
-        {article.body.map((p: string, i: number) => <p key={i}>{p}</p>)}
+      <article className="mx-auto w-full max-w-5xl px-6 py-14 text-base leading-[1.82] text-foreground/85 md:px-12 md:py-16 lg:px-16" data-reveal>
+        {article.body.map((p: string, i: number) => <p key={i} className="space-y-6">{p}</p>)}
       </article>
 
       {/* More perspectives — BBD-style, scroll to next */}
       <section className="border-t border-border bg-mint-soft/40" data-reveal>
-        <div className="mx-auto max-w-7xl px-5 md:px-8 py-16">
+        <div className="mx-auto w-full max-w-7xl px-6 py-16 md:px-12 lg:px-16">
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="eyebrow">Continue reading</p>
